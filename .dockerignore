@@ -1,0 +1,11 @@
+**/node_modules
+**/.next
+**/dist
+**/.turbo
+**/.expo
+.git
+.github
+**/*.log
+**/.env*
+!**/.env.example
+README.md
