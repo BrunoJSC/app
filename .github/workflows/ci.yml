@@ -51,6 +51,7 @@ jobs:
           --vcs-enabled=true
           --vcs-client-kind=git
           --vcs-use-ignore-file=false
+          --no-errors-on-unmatched
 
   build:
     name: Type-check & build
