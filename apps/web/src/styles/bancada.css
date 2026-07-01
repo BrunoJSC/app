@@ -1,0 +1,73 @@
+/**
+ * Bancada landing — scoped design tokens.
+ *
+ * Namespaced (`bnc-*`) so the marketing surface can own a dark, high-contrast
+ * palette without leaking into the neutral app theme. Fonts are wired to the
+ * `next/font` CSS variables declared on the landing root, with static family
+ * fallbacks for the Fontshare faces (General Sans / Satoshi).
+ */
+
+@theme {
+	--color-bnc-bg: #0d0e12;
+	--color-bnc-panel: #0f1015;
+	--color-bnc-surface: #17181e;
+	--color-bnc-surface-2: #14151a;
+	--color-bnc-deep: #0b0c10;
+	--color-bnc-elevated: #1b1d24;
+	--color-bnc-line: #262832;
+	--color-bnc-line-strong: #3a3d4a;
+	--color-bnc-chip: #232530;
+	--color-bnc-fg: #f2f3f5;
+	--color-bnc-muted: #8a8d96;
+	--color-bnc-subtle: #5a5e6b;
+	--color-bnc-accent: #d6ff3d;
+
+	--font-display: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+	--font-body: "General Sans", "Satoshi", var(--font-space-grotesk), sans-serif;
+	--font-mono-code: var(--font-jetbrains-mono), "JetBrains Mono", monospace;
+}
+
+@keyframes bnc-blink {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.2;
+	}
+}
+
+@keyframes bnc-eq {
+	0%,
+	100% {
+		transform: scaleY(0.3);
+	}
+	50% {
+		transform: scaleY(1);
+	}
+}
+
+/* Marketing-only chrome, scoped so it never touches the app shell. */
+.bnc-scope ::selection {
+	color: var(--color-bnc-bg);
+	background: var(--color-bnc-accent);
+}
+
+.bnc-scope ::-webkit-scrollbar {
+	width: 11px;
+	height: 11px;
+}
+
+.bnc-scope ::-webkit-scrollbar-track {
+	background: var(--color-bnc-bg);
+}
+
+.bnc-scope ::-webkit-scrollbar-thumb {
+	background: var(--color-bnc-line);
+	border: 3px solid var(--color-bnc-bg);
+	border-radius: 6px;
+}
+
+.bnc-scope ::-webkit-scrollbar-thumb:hover {
+	background: var(--color-bnc-line-strong);
+}
