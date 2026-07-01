@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import SignInForm from "@/components/sign-in-form";
+import { getSafeRedirect } from "@/lib/safe-redirect";
 
 export const metadata: Metadata = {
 	title: "Entrar — Bancada",
@@ -10,15 +11,10 @@ export const metadata: Metadata = {
 export default async function LoginPage({
 	searchParams,
 }: Readonly<{
-	searchParams: Promise<{ redirect?: string }>;
+	searchParams: Promise<{ redirect?: string | string[] }>;
 }>) {
 	const { redirect } = await searchParams;
-
-	// Only honor relative in-app paths to avoid open-redirect abuse.
-	const redirectTo =
-		redirect?.startsWith("/") && !redirect.startsWith("//")
-			? redirect
-			: undefined;
+	const redirectTo = getSafeRedirect(redirect);
 
 	return <SignInForm redirectTo={redirectTo} />;
 }

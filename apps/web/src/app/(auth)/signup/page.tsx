@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import SignUpForm from "@/components/sign-up-form";
+import { getSafeRedirect } from "@/lib/safe-redirect";
 
 export const metadata: Metadata = {
 	title: "Criar conta — Bancada",
@@ -11,14 +12,10 @@ export const metadata: Metadata = {
 export default async function SignUpPage({
 	searchParams,
 }: Readonly<{
-	searchParams: Promise<{ redirect?: string }>;
+	searchParams: Promise<{ redirect?: string | string[] }>;
 }>) {
 	const { redirect } = await searchParams;
-
-	const redirectTo =
-		redirect?.startsWith("/") && !redirect.startsWith("//")
-			? redirect
-			: undefined;
+	const redirectTo = getSafeRedirect(redirect);
 
 	return <SignUpForm redirectTo={redirectTo} />;
 }
