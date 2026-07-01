@@ -1,27 +1,47 @@
-import { Button } from "@stack/ui/components/button";
-import { Input } from "@stack/ui/components/input";
-import { Label } from "@stack/ui/components/label";
-import { useForm } from "@tanstack/react-form";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import z from "zod";
+"use client";
 
+import { Separator } from "@stack/ui/components/separator";
+import type { Route } from "next";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
+
+import { useAppForm } from "@/components/form/app-form";
+import Loader from "@/components/loader";
+import { signInSchema } from "@/lib/auth/schemas";
 import { authClient } from "@/lib/auth-client";
 
-import Loader from "./loader";
+const DEFAULT_REDIRECT = "/dashboard";
+
+type SignInFormProps = Readonly<{
+	/** Path to send the user to after a successful sign in. */
+	redirectTo?: string;
+}>;
 
 export default function SignInForm({
-	onSwitchToSignUp,
-}: {
-	onSwitchToSignUp: () => void;
-}) {
+	redirectTo = DEFAULT_REDIRECT,
+}: SignInFormProps) {
 	const router = useRouter();
-	const { isPending } = authClient.useSession();
+	const { data: session, isPending } = authClient.useSession();
 
-	const form = useForm({
+	const destination = redirectTo as Route;
+
+	// An already-authenticated visitor has no business on the login screen.
+	useEffect(() => {
+		if (session) {
+			router.replace(destination);
+		}
+	}, [session, destination, router]);
+
+	const form = useAppForm({
 		defaultValues: {
 			email: "",
 			password: "",
+		},
+		validators: {
+			onBlur: signInSchema,
+			onSubmit: signInSchema,
 		},
 		onSubmit: async ({ value }) => {
 			await authClient.signIn.email(
@@ -31,112 +51,83 @@ export default function SignInForm({
 				},
 				{
 					onSuccess: () => {
-						router.push("/dashboard");
-						toast.success("Sign in successful");
+						router.push(destination);
 					},
-					onError: (error) => {
-						toast.error(error.error.message || error.error.statusText);
+					onError: ({ error }) => {
+						toast.error(
+							error.message || "Não foi possível entrar. Tente novamente."
+						);
 					},
 				}
 			);
 		},
-		validators: {
-			onSubmit: z.object({
-				email: z.email("Invalid email address"),
-				password: z.string().min(8, "Password must be at least 8 characters"),
-			}),
-		},
 	});
 
-	if (isPending) {
+	if (isPending || session) {
 		return <Loader />;
 	}
 
 	return (
-		<div className="mx-auto mt-10 w-full max-w-md p-6">
-			<h1 className="mb-6 text-center font-bold text-3xl">Welcome Back</h1>
+		<div className="w-full">
+			<div className="mb-8 space-y-2">
+				<h1 className="font-display font-semibold text-3xl text-bnc-fg tracking-[-0.02em]">
+					Entrar na Bancada
+				</h1>
+				<p className="text-bnc-muted text-sm">
+					Acesse sua conta para gerenciar projetos e propostas.
+				</p>
+			</div>
 
 			<form
-				className="space-y-4"
-				onSubmit={(e) => {
-					e.preventDefault();
-					e.stopPropagation();
+				className="space-y-5"
+				noValidate
+				onSubmit={(event) => {
+					event.preventDefault();
+					event.stopPropagation();
 					form.handleSubmit();
 				}}
 			>
-				<div>
-					<form.Field name="email">
-						{(field) => (
-							<div className="space-y-2">
-								<Label htmlFor={field.name}>Email</Label>
-								<Input
-									id={field.name}
-									name={field.name}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									type="email"
-									value={field.state.value}
-								/>
-								{field.state.meta.errors.map((error) => (
-									<p className="text-red-500" key={error?.message}>
-										{error?.message}
-									</p>
-								))}
-							</div>
-						)}
-					</form.Field>
-				</div>
-
-				<div>
-					<form.Field name="password">
-						{(field) => (
-							<div className="space-y-2">
-								<Label htmlFor={field.name}>Password</Label>
-								<Input
-									id={field.name}
-									name={field.name}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									type="password"
-									value={field.state.value}
-								/>
-								{field.state.meta.errors.map((error) => (
-									<p className="text-red-500" key={error?.message}>
-										{error?.message}
-									</p>
-								))}
-							</div>
-						)}
-					</form.Field>
-				</div>
-
-				<form.Subscribe
-					selector={(state) => ({
-						canSubmit: state.canSubmit,
-						isSubmitting: state.isSubmitting,
-					})}
-				>
-					{({ canSubmit, isSubmitting }) => (
-						<Button
-							className="w-full"
-							disabled={!canSubmit || isSubmitting}
-							type="submit"
-						>
-							{isSubmitting ? "Submitting..." : "Sign In"}
-						</Button>
+				<form.AppField name="email">
+					{(field) => (
+						<field.TextField
+							autoComplete="email"
+							inputMode="email"
+							label="E-mail"
+							placeholder="voce@exemplo.com"
+							type="email"
+						/>
 					)}
-				</form.Subscribe>
+				</form.AppField>
+
+				<form.AppField name="password">
+					{(field) => (
+						<field.TextField
+							autoComplete="current-password"
+							label="Senha"
+							placeholder="••••••••"
+							type="password"
+						/>
+					)}
+				</form.AppField>
+
+				<form.AppForm>
+					<form.SubmitButton pendingLabel="Entrando...">
+						Entrar
+					</form.SubmitButton>
+				</form.AppForm>
 			</form>
 
-			<div className="mt-4 text-center">
-				<Button
-					className="text-indigo-600 hover:text-indigo-800"
-					onClick={onSwitchToSignUp}
-					variant="link"
+			<Separator className="my-6 bg-bnc-line" />
+
+			<p className="text-center text-bnc-muted text-sm">
+				Ainda não tem conta?{" "}
+				<Link
+					className="font-medium text-bnc-accent transition-colors hover:brightness-110"
+					href="/signup"
 				>
-					Need an account? Sign Up
-				</Button>
-			</div>
+					Criar conta
+				</Link>
+			</p>
 		</div>
 	);
 }
