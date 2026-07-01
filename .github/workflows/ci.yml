@@ -79,4 +79,6 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Type-check & build
-        run: bunx turbo run check-types build --cache-dir=.turbo
+        # env-mode=loose lets SKIP_ENV_VALIDATION reach the task processes
+        # (turbo's default strict mode only forwards declared env vars).
+        run: bunx turbo run check-types build --cache-dir=.turbo --env-mode=loose
