@@ -1,11 +1,6 @@
 "use client";
 
-import {
-	MessageScroller as MessageScrollerPrimitive,
-	useMessageScroller,
-	useMessageScrollerScrollable,
-	useMessageScrollerVisibility,
-} from "@shadcn/react/message-scroller";
+import { MessageScroller as MessageScrollerPrimitive } from "@shadcn/react/message-scroller";
 import { Button } from "@stack/ui/components/button";
 import { cn } from "@stack/ui/lib/utils";
 import { ArrowDownIcon } from "lucide-react";
@@ -119,6 +114,12 @@ function MessageScrollerButton({
 	);
 }
 
+// biome-ignore lint/performance/noBarrelFile: re-exports the underlying hooks alongside this module's own components
+export {
+	useMessageScroller,
+	useMessageScrollerScrollable,
+	useMessageScrollerVisibility,
+} from "@shadcn/react/message-scroller";
 export {
 	MessageScroller,
 	MessageScrollerButton,
@@ -126,7 +127,4 @@ export {
 	MessageScrollerItem,
 	MessageScrollerProvider,
 	MessageScrollerViewport,
-	useMessageScroller,
-	useMessageScrollerScrollable,
-	useMessageScrollerVisibility,
 };
