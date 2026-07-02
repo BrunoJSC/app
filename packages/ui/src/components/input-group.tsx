@@ -9,6 +9,7 @@ import type * as React from "react";
 
 function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
 	return (
+		// biome-ignore lint/a11y/useSemanticElements: shadcn input-group is a styled container using role="group" by design
 		<div
 			className={cn(
 				"group/input-group relative flex h-8 w-full min-w-0 items-center rounded-none border border-input bg-background shadow-xs outline-none transition-[color,box-shadow] has-[>textarea]:h-auto dark:bg-input/30",
@@ -53,6 +54,9 @@ function InputGroupAddon({
 	...props
 }: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>) {
 	return (
+		// biome-ignore lint/a11y/useSemanticElements: shadcn addon is a styled container using role="group" by design
+		// biome-ignore lint/a11y/useKeyWithClickEvents: click merely forwards focus to the control; addon itself isn't keyboard-interactive
+		// biome-ignore lint/a11y/noNoninteractiveElementInteractions: click-to-focus is a convenience affordance on a decorative addon
 		<div
 			className={cn(inputGroupAddonVariants({ align }), className)}
 			data-align={align}

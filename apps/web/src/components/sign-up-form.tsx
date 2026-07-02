@@ -9,6 +9,7 @@ import { toast } from "sonner";
 
 import { useAppForm } from "@/components/form/app-form";
 import Loader from "@/components/loader";
+import { SocialAuthButtons } from "@/components/social-auth-buttons";
 import { signUpSchema } from "@/lib/auth/schemas";
 import { authClient } from "@/lib/auth-client";
 
@@ -129,6 +130,14 @@ export default function SignUpForm({
 					</form.SubmitButton>
 				</form.AppForm>
 			</form>
+
+			<div className="my-6 flex items-center gap-3">
+				<span className="h-px flex-1 bg-bnc-line" />
+				<span className="text-bnc-muted text-xs">ou</span>
+				<span className="h-px flex-1 bg-bnc-line" />
+			</div>
+
+			<SocialAuthButtons callbackURL={destination} />
 
 			<Separator className="my-6 bg-bnc-line" />
 

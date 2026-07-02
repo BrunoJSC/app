@@ -7,7 +7,11 @@ export const env = createEnv({
 		DATABASE_URL: z.string().min(1),
 		BETTER_AUTH_SECRET: z.string().min(32),
 		BETTER_AUTH_URL: z.url(),
-		CORS_ORIGIN: z.url(),
+		CORS_ORIGIN: z.url().transform((value) => new URL(value).origin),
+		GITHUB_CLIENT_ID: z.string().optional(),
+		GITHUB_CLIENT_SECRET: z.string().optional(),
+		GOOGLE_CLIENT_ID: z.string().optional(),
+		GOOGLE_CLIENT_SECRET: z.string().optional(),
 		NODE_ENV: z
 			.enum(["development", "production", "test"])
 			.default("development"),
