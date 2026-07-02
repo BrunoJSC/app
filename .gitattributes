@@ -1,0 +1,23 @@
+# Line-ending normalization.
+#
+# Committing this file overrides each contributor's local `core.autocrlf`
+# setting, guaranteeing consistent line endings for everyone regardless of OS
+# or Git configuration (see GitHub docs: "Configuring Git to handle line
+# endings"). Text files are stored as LF in the repository and checked out as
+# LF in every working tree, which matches the Biome/Ultracite formatter default.
+* text=auto eol=lf
+
+# Explicitly mark binary assets so their bytes are never altered.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.avif binary
+*.woff  binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
+*.eot  binary
+*.pdf  binary
